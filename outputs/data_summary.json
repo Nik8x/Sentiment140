@@ -1,0 +1,7 @@
+{
+  "n_train": 20000,
+  "n_test_total": 498,
+  "n_test_binary_scorable": 359,
+  "n_test_neutral_excluded": 139,
+  "pct_tweets_with_emoticon": 0.0124
+}

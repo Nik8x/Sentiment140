@@ -1,0 +1,33 @@
+{
+  "internal_validation": {
+    "baseline (majority class)": {
+      "val_acc": 0.5
+    },
+    "logistic_regression": {
+      "val_acc": 0.766,
+      "val_f1": 0.7670482827277252,
+      "val_auc": 0.84460025
+    },
+    "random_forest": {
+      "val_acc": 0.72125,
+      "val_f1": 0.7308713492638185,
+      "val_auc": 0.794570875
+    }
+  },
+  "official_test": {
+    "logistic_regression": {
+      "official_test_acc": 0.7883008356545961,
+      "official_test_f1": 0.8010471204188482,
+      "official_test_auc": 0.871391320543863
+    },
+    "random_forest": {
+      "official_test_acc": 0.7158774373259053,
+      "official_test_f1": 0.745,
+      "official_test_auc": 0.7874526603340162
+    },
+    "baseline (majority class)": {
+      "official_test_acc": 0.5069637883008357
+    }
+  },
+  "best_model": "logistic_regression"
+}
