@@ -7928,7 +7928,7 @@ classical ML models trained on a 20,000-tweet sample.</p>
 <span class="n">X_train</span> <span class="o">=</span> <span class="n">vectorizer</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">train</span><span class="o">.</span><span class="n">clean_text</span><span class="p">)</span>
 <span class="n">X_test</span> <span class="o">=</span> <span class="n">vectorizer</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">test_binary</span><span class="o">.</span><span class="n">clean_text</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'vocabulary size: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">vectorizer</span><span class="o">.</span><span class="n">vocabulary_</span><span class="p">)</span><span class="si">}</span><span class="s1"> (versus 36,844,338 in the original)'</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'vocabulary size: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">vectorizer</span><span class="o">.</span><span class="n">vocabulary_</span><span class="p">)</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
 <span class="n">X_train</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">X_test</span><span class="o">.</span><span class="n">shape</span>
 </pre></div>
 </div>
@@ -7942,7 +7942,7 @@ classical ML models trained on a 20,000-tweet sample.</p>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>vocabulary size: 5000 (versus 36,844,338 in the original)
+<pre>vocabulary size: 5000
 </pre>
 </div>
 </div>
