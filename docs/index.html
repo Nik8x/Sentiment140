@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Sentiment140: A Real Train/Test Split, Finally</title>
+<title>Sentiment140: Tweet Sentiment Classification</title>
 <style>
 :root {
   color-scheme: light;
@@ -110,16 +110,13 @@ a { color: var(--series-1); }
 <main>
 
 <header class="hero">
-  <h1>Sentiment140: A Real Train/Test Split, Finally</h1>
+  <h1>Sentiment140: Tweet Sentiment Classification</h1>
   <p class="lede">
-    Two original notebooks, neither ever produced a usable model.
-    One ends in <code>Dense(1, activation='softmax')</code>, softmax
-    on a single unit always outputs 1.0 no matter the input, and a
-    reshape that flattens a one-hot label matrix into a meaningless
-    single column. The other scales raw integer token IDs with
-    <code>StandardScaler</code> and depends on a TensorFlow 1 TPU API
-    removed years ago. Neither ever evaluated on a real held-out test
-    set.
+    Binary sentiment classification on a 20,000-tweet stratified sample
+    from Sentiment140's 1.6 million auto-labeled tweets. A TF-IDF matrix
+    capped at 5,000 features feeds logistic regression and random
+    forest, evaluated both on an internal held-out split and on
+    Stanford's own hand-labeled test set for a genuinely external check.
   </p>
   <div class="pill-row">
     <span class="pill">20,000-tweet stratified sample</span>
@@ -129,34 +126,17 @@ a { color: var(--series-1); }
   </div>
 </header>
 
-<section id="bugs">
-  <h2>What the originals actually did</h2>
-  <ul class="findings">
-    <li><strong>A softmax that can't do anything.</strong>
-      <code>Dense(1, activation='softmax')</code>, softmax normalizes
-      across units, with only one unit it always outputs exactly 1.0.</li>
-    <li><strong>A reshape that destroys the labels.</strong>
-      <code>dummy_train.reshape(8000000, 1)</code> flattens a
-      (1,600,000 x 5) one-hot matrix (from running <code>to_categorical</code>
-      on raw 0/4 labels instead of remapping to 0/1 first) into one
-      meaningless column of 8 million numbers.</li>
-    <li><strong>36,844,338 features, hardcoded.</strong>
-      <code>CountVectorizer(ngram_range=(1,5))</code> on 1.6M tweets,
-      with that exact number typed into the next layer's
-      <code>input_shape</code>, training never got past this point.</li>
-    <li><strong>Scaling categorical token IDs.</strong> The second
-      notebook applies <code>StandardScaler</code> to raw integer word
-      indices, treating a category label as if it were a continuous
-      quantity.</li>
-    <li><strong>No real evaluation, ever.</strong> Both notebooks skip
-      a genuine train/test split, and the official
-      <code>testdata.manual.2009.06.14.csv</code> was loaded once and
-      never scored.</li>
-  </ul>
+<section id="features">
+  <h2>Feature engineering</h2>
+  <p class="section-intro">
+    Tweet text is vectorized into a TF-IDF matrix capped at 5,000
+    features, keeping the feature space compact and manageable for
+    classical ML models trained on a 20,000-tweet sample.
+  </p>
 </section>
 
 <section id="leakage-check">
-  <h2>A suspected bug that turned out not to be real</h2>
+  <h2>Checking for emoticon leakage</h2>
   <p class="section-intro">
     Sentiment140's labels were originally assigned automatically by
     emoticon (":)" or ":("), a classic leakage risk if those emoticons
@@ -168,9 +148,9 @@ a { color: var(--series-1); }
     positive (1.7%) and negative (1.0%) tweets, not the stark split a
     real leakage problem would show. The training file's own name,
     <code>training.1600000.processed.noemoticon.csv</code>, says why:
-    Stanford already stripped emoticons during their own preprocessing,
-    before this data was ever released. Worth checking, but not a real
-    issue in this file.
+    Stanford stripped emoticons during their own preprocessing, before
+    this data was ever released. Worth checking, but not an issue in
+    this file.
   </div>
 </section>
 
@@ -195,8 +175,7 @@ a { color: var(--series-1); }
 <section id="model">
   <h2>Modeling: evaluated on data the model never saw</h2>
   <p class="section-intro">
-    A 5,000-feature TF-IDF matrix (versus the original's 36.8 million),
-    logistic regression and random forest, evaluated two ways: an
+    Logistic regression and random forest, evaluated two ways: an
     internal held-out split of the training sample, and Stanford's own
     359 binary-scorable hand-labeled tweets, a genuinely different data
     source neither model ever saw during training.
@@ -246,23 +225,19 @@ a { color: var(--series-1); }
 <section id="findings">
   <h2>Key findings</h2>
   <ul class="findings">
-    <li><strong>Both original notebooks had a broken final model</strong>,
-      one a mathematically meaningless single-unit softmax and a
-      reshape that destroyed the label structure, the other dependent
-      on a removed TensorFlow 1 API and a category-as-continuous
-      scaling error.</li>
-    <li><strong>Neither ever evaluated on a real held-out set.</strong>
-      This rebuild scores against Stanford's own hand-labeled tweets,
-      not just an internal split.</li>
-    <li><strong>The suspected emoticon-leakage bug wasn't actually
-      real</strong> in this file, Stanford's own preprocessing already
-      stripped emoticons before release.</li>
-    <li><strong>Logistic regression reaches 78.8% on the genuinely
-      external test set</strong>, and generalizes slightly better there
-      than on its own internal validation, a good sign.</li>
+    <li><strong>Emoticons don't leak into the tweet text.</strong>
+      Stanford's own preprocessing stripped them before release, so the
+      classic leakage risk for this dataset doesn't actually apply
+      here.</li>
+    <li><strong>Evaluation includes Stanford's own hand-labeled test
+      tweets</strong>, not just an internal split, a genuinely different
+      data source neither model saw during training.</li>
+    <li><strong>Logistic regression reaches 78.8% on the external test
+      set</strong>, and generalizes slightly better there than on its
+      own internal validation, a good sign.</li>
     <li><strong>Unsupervised TF-IDF clustering can't find sentiment at
-      all</strong> (ARI ~0.01), it finds topic structure instead, a
-      real and informative limitation of bag-of-words features.</li>
+      all</strong> (ARI ~0.01), it finds topic structure instead, an
+      informative limitation of bag-of-words features.</li>
   </ul>
 </section>
 
@@ -272,9 +247,8 @@ a { color: var(--series-1); }
     <li>Scale up training beyond 20,000 tweets, the full 1.6M-tweet
       corpus almost certainly has more signal than a TF-IDF logistic
       regression can currently extract.</li>
-    <li>Try a proper neural approach with pretrained word embeddings or
-      a transformer (unlike the original's broken LSTM/TPU attempt),
-      now that a correct baseline and evaluation exist to compare
+    <li>Try a neural approach with pretrained word embeddings or a
+      transformer, now that a baseline and evaluation exist to compare
       against.</li>
     <li>Build a genuine 3-class model (negative/neutral/positive) to
       make full use of Stanford's official test set instead of

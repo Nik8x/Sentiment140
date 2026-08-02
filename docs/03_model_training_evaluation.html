@@ -7802,25 +7802,12 @@ a.anchor-link {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h1 id="Model-training-and-evaluation">Model training and evaluation<a class="anchor-link" href="#Model-training-and-evaluation">¶</a></h1><p>Neither of the original notebooks ever produced a real evaluation
-number. <code>Sentiment140.ipynb</code>'s model ends in
-<code>Dense(1, activation='softmax')</code>, softmax on a single unit always
-outputs exactly 1.0 regardless of input, a probability that's
-meaningless by construction, and <code>dummy_train.reshape(8000000, 1)</code>
-flattens what should have been a (1,600,000, 5) one-hot matrix into a
-single column of 8 million numbers, destroying the class structure
-before it ever reaches the model. Its sibling notebook
-(<code>twitter_sentiment.ipynb</code>) fares no better: it scales raw integer
-token IDs with <code>StandardScaler</code> (token IDs are categories, not
-continuous quantities, scaling them is meaningless) and relies on the
-long-removed <code>tf.contrib.tpu</code> API. Both also skip a genuine train/test
-split entirely, <code>test.csv</code> is loaded once and never touched again.</p>
-<p>This rebuild trains logistic regression and random forest on the
-TF-IDF features from notebook 02, with a real stratified train/test
-split on the 20,000-tweet sample, then, more importantly, an actual
-external evaluation on Stanford's own 359 binary-scorable hand-labeled
-tweets, a genuinely different data source than what any of these
-models were trained on.</p>
+<h1 id="Model-training-and-evaluation">Model training and evaluation<a class="anchor-link" href="#Model-training-and-evaluation">¶</a></h1><p>This notebook trains logistic regression and random forest on the
+TF-IDF features from notebook 02, with a stratified train/test split
+on the 20,000-tweet sample, then, more importantly, an external
+evaluation on Stanford's own 359 binary-scorable hand-labeled tweets,
+a genuinely different data source than what any of these models were
+trained on.</p>
 </div>
 </div>
 </div>

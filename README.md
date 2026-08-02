@@ -2,25 +2,12 @@
 
 Binary sentiment classification on tweets, using
 [Sentiment140](http://help.sentiment140.com/for-students/) (1.6 million
-tweets, auto-labeled by the original tweet's emoticon, then stripped
-before release). Both original notebooks are kept in `_old/` untouched,
-neither ever produced a working, evaluated model.
-
-`Sentiment140.ipynb` ends in `Dense(1, activation='softmax')`, softmax
-on a single unit always outputs 1.0 regardless of input, and a
-`dummy_train.reshape(8000000, 1)` call that flattens what should have
-been a one-hot label matrix into a meaningless single column (a side
-effect of running `to_categorical` on the raw 0/4 labels instead of
-remapping them to 0/1 first). Its sibling, `twitter_sentiment.ipynb`,
-scales raw integer word-token IDs with `StandardScaler` (treating a
-category as a continuous number) and depends on the long-removed
-`tf.contrib.tpu` API. Neither ever ran a genuine train/test split, the
-official hand-labeled `testdata.manual.2009.06.14.csv` was loaded once
-and never scored.
+tweets, auto-labeled by each tweet's emoticon, then stripped before
+release).
 
 ## Data
 
-This rebuild works from a 20,000-tweet stratified sample (10,000 per
+This works from a 20,000-tweet stratified sample (10,000 per
 class), pulled from a parquet mirror of the full dataset rather than
 downloading all 1.6M rows. `00_data_setup_eda.ipynb` fetches this
 automatically if it doesn't already exist locally. The official
@@ -28,21 +15,20 @@ automatically if it doesn't already exist locally. The official
 
 ## Notebooks
 
-1. `00_data_setup_eda.ipynb`: builds the stratified sample, checks the
-   suspected emoticon-leakage bug directly against the data (it turns
-   out not to be real, Stanford already stripped emoticons before
-   release), and flags that the official test set has 3 classes
-   (negative/neutral/positive) while training only has 2.
+1. `00_data_setup_eda.ipynb`: builds the stratified sample, checks
+   whether emoticons leaked into the tweet text (they didn't, Stanford
+   already stripped them before release), and flags that the official
+   test set has 3 classes (negative/neutral/positive) while training
+   only has 2.
 2. `01_statistical_testing.ipynb`: real hypothesis tests, mentioning
    someone and using exclamation marks both correlate significantly
    with positive sentiment, tweet length doesn't.
 3. `02_feature_engineering_selection.ipynb`: a capped 5,000-feature
-   TF-IDF matrix instead of the original's 36.8-million-column
-   explosion.
+   TF-IDF matrix, keeping the feature space compact for classical ML
+   models.
 4. `03_model_training_evaluation.ipynb`: logistic regression and random
    forest, evaluated on a real internal held-out split and on
-   Stanford's own hand-labeled test tweets, a genuinely external check
-   neither original notebook ever ran.
+   Stanford's own hand-labeled test tweets, a genuinely external check.
 5. `04_clustering.ipynb`: KMeans and Gaussian mixture clustering by
    TF-IDF profile, which turns out to find topic, not sentiment.
 

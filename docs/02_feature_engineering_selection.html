@@ -7802,13 +7802,10 @@ a.anchor-link {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h1 id="Feature-engineering">Feature engineering<a class="anchor-link" href="#Feature-engineering">¶</a></h1><p>The original notebook's <code>CountVectorizer(ngram_range=(1, 5))</code> on 1.6
-million tweets produced 36,844,338 columns, a number hardcoded directly
-into the next cell's <code>Dense(input_shape=(36844338,))</code>, and the model
-never got past that layer. This rebuild caps vocabulary size explicitly
-(<code>max_features</code>) and sticks to unigrams and bigrams, a TF-IDF matrix
-that's actually usable as model input rather than one that overflows
-memory before training starts.</p>
+<h1 id="Feature-engineering">Feature engineering<a class="anchor-link" href="#Feature-engineering">¶</a></h1><p>Tweet text is vectorized into a TF-IDF matrix, capping vocabulary
+size explicitly (<code>max_features</code>) and sticking to unigrams and
+bigrams, which keeps the resulting matrix a compact, usable size for
+classical ML models trained on a 20,000-tweet sample.</p>
 </div>
 </div>
 </div>
